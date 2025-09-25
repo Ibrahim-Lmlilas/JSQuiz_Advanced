@@ -1,5 +1,5 @@
-import quiz from './modules/quiz.js';
+import quiz from "./modules/quiz.js";
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener("DOMContentLoaded", () => {
   quiz.init();
 });

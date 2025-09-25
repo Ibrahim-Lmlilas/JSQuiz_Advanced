@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": 1,
+    "q": "Quelle propriété change la couleur du texte ?",
+    "options": ["color", "background-color", "font-size"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 2,
+    "q": "Quelle propriété change la couleur de fond ?",
+    "options": ["background-color", "color", "border-color"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 3,
+    "q": "Quelle(s) propriété(s) gèrent les marges et paddings ?",
+    "options": ["margin", "padding", "border", "spacing"],
+    "correct": [0, 1],
+    "multi": true
+  },
+  {
+    "id": 4,
+    "q": "Quelle propriété change la taille de la police ?",
+    "options": ["font-size", "text-size", "size"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 5,
+    "q": "Quelle propriété CSS change l’affichage d’un élément ?",
+    "options": ["display", "position", "float"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 6,
+    "q": "Quelle propriété CSS fait flotter un élément à gauche ou droite ?",
+    "options": ["float", "position", "align"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 7,
+    "q": "Quelle(s) valeur(s) de display permettent de créer un flex container ?",
+    "options": ["block", "inline-block", "flex", "grid"],
+    "correct": [2, 3],
+    "multi": true
+  },
+  {
+    "id": 8,
+    "q": "Quelle propriété CSS change la couleur du contour ?",
+    "options": ["border-color", "color", "outline-color"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 9,
+    "q": "Quelle propriété CSS change la visibilité d’un élément ?",
+    "options": ["visibility", "display", "opacity"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 10,
+    "q": "Quelle propriété CSS permet de centrer un texte ?",
+    "options": ["text-align", "align-items", "justify-content"],
+    "correct": [0],
+    "multi": false
+  }
+]

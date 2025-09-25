@@ -5,14 +5,14 @@ export class Stats {
   }
 
   static feedbackByPercentage(p) {
-    if (p >= 80) return 'Excellent!';
-    if (p >= 60) return 'Bien!';
-    if (p >= 40) return 'Peut mieux faire';
-    return 'Il faut réviser!';
+    if (p >= 80) return "Excellent!";
+    if (p >= 60) return "Bien!";
+    if (p >= 40) return "Peut mieux faire";
+    return "Il faut réviser!";
   }
 
   static timeFeedbackByMinutes(min) {
-    return min >= 5 ? 'You can be faster!' : 'Good job on time!';
+    return min >= 5 ? "You can be faster!" : "Good job on time!";
   }
 
   static formatChrono(min, sec) {
@@ -25,8 +25,9 @@ export class Stats {
     const setCor = new Set(correct);
     let correctCount = 0;
     let wrongCount = 0;
-    setSel.forEach(i => {
-      if (setCor.has(i)) correctCount++; else wrongCount++;
+    setSel.forEach((i) => {
+      if (setCor.has(i)) correctCount++;
+      else wrongCount++;
     });
     const fullCorrect = correctCount === totalCorrect && wrongCount === 0;
     let increment = 0;
@@ -37,6 +38,13 @@ export class Stats {
       increment = Math.max(0, correctCount - wrongCount) / totalCorrect;
       partial = true;
     }
-    return { increment, fullCorrect, partial, correctCount, wrongCount, totalCorrect };
+    return {
+      increment,
+      fullCorrect,
+      partial,
+      correctCount,
+      wrongCount,
+      totalCorrect,
+    };
   }
 }

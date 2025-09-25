@@ -1,70 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/webp" href="./assets/img/codedex-bot-logo-compressed.webp">
-    <title>My Quiz</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/webp"
+            href="./assets/img/codedex-bot-logo-compressed.webp">
+        <title>My Quiz</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+            rel="stylesheet">
 
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-    
+        <link rel="stylesheet" href="assets/css/style.css">
+    </head>
+    <body>
 
-    <h1>My <span>Q</span>uiz</h1>
-    <p id = 'time'></p>
+        <h1>My <span>Q</span>uiz</h1>
+        <p id='time'></p>
 
+        <div id="name_modal">
+            <div>
+                <input type="text" id="name" value>
+            </div>
 
+            <div id="cart_selection">
 
-    <div id="name_modal">
-        <div>
-            <input type="text" id="name" value="">
+                <div class="cart" data-cart="html">
+                    <input type="radio" id="html-checkbox" name="category"
+                        value="html_basics">
+                    <label for="html-checkbox"></label>
+                    <div class="cart-content">
+                        <div class="course-number">QUIZ 1</div>
+                        <h3>HTML</h3>
+                        <p class="course-description">Create your first website
+                            with HTML, the building blocks of the web and dive
+                            into the...</p>
+
+                    </div>
+                </div>
+
+                <div class="cart" data-cart="css">
+                    <input type="radio" id="css-checkbox" name="category"
+                        value="css_basics">
+                    <label for="css-checkbox"></label>
+                    <div class="cart-content">
+                        <div class="course-number">QUIZ 2</div>
+                        <h3>CSS</h3>
+                        <p class="course-description">Learn to use CSS selectors
+                            and properties to stylize your HTML pages with
+                            colors, fonts,...</p>
+
+                    </div>
+                </div>
+
+                <div class="cart" data-cart="js">
+                    <input type="radio" id="js-checkbox" name="category"
+                        value="js_basics">
+                    <label for="js-checkbox"></label>
+                    <div class="cart-content">
+                        <div class="course-number">QUIZ 3</div>
+                        <h3>JavaScript</h3>
+                        <p class="course-description">Learn variables, loops,
+                            functions, and events to start building interactive
+                            web apps with...</p>
+
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div id="cart_selection">
+        <div id="quiz_container">
 
-            <div class="cart" data-cart="html">
-            <input type="radio" id="html-checkbox" name="category" value="html_basics">
-            <label for="html-checkbox"></label>
-            <div class="cart-content">
-                <div class="course-number">QUIZ 1</div>
-                <h3>HTML</h3>
-                <p class="course-description">Create your first website with HTML, the building blocks of the web and dive into the...</p>
-               
-            </div>
-            </div>
-
-            <div class="cart" data-cart="css">
-            <input type="radio" id="css-checkbox" name="category" value="css_basics">
-            <label for="css-checkbox"></label>
-            <div class="cart-content">
-                <div class="course-number">QUIZ 2</div>
-                <h3>CSS</h3>
-                <p class="course-description">Learn to use CSS selectors and properties to stylize your HTML pages with colors, fonts,...</p>
-               
-            </div>
-            </div>
-
-            <div class="cart" data-cart="js">
-            <input type="radio" id="js-checkbox" name="category" value="js_basics">
-            <label for="js-checkbox"></label>
-            <div class="cart-content">
-                <div class="course-number">QUIZ 3</div>
-                <h3>JavaScript</h3>
-                <p class="course-description">Learn variables, loops, functions, and events to start building interactive web apps with...</p>
-                
-            </div>
-            </div>
         </div>
-    </div>
+        <button id='Start_btn' class="big-button"> Start Quiz </button>
 
-    <div id="quiz_container">
-       
-    </div>
-    <button id  = 'Start_btn'  class="big-button"> Start Quiz </button>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script type="module" src = 'script.js'></script>
-</body>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script type="module" src='script.js'></script>
+    </body>
 </html>

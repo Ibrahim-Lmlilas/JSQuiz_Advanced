@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": 1,
+    "q": "Quel tag définit un lien hypertexte ?",
+    "options": ["<link>", "<a>", "<href>"],
+    "correct": [1],
+    "multi": false
+  },
+  {
+    "id": 2,
+    "q": "Quel(s) attribut(s) sont utilisés pour les images ?",
+    "options": ["src", "alt", "href", "title"],
+    "correct": [0, 1],
+    "multi": true
+  },
+  {
+    "id": 3,
+    "q": "Quel tag représente un paragraphe ?",
+    "options": ["<p>", "<div>", "<span>"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 4,
+    "q": "Quel tag représente un titre principal ?",
+    "options": ["<h1>", "<h6>", "<header>"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 5,
+    "q": "Quel(s) tag(s) servent pour les listes ?",
+    "options": ["<ul>", "<ol>", "<li>", "<dl>"],
+    "correct": [0, 1, 2, 3],
+    "multi": true
+  },
+  {
+    "id": 6,
+    "q": "Quel attribut fait ouvrir un lien dans un nouvel onglet ?",
+    "options": ["target='_blank'", "href='_new'", "rel='noopener'"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 7,
+    "q": "Comment définir un champ obligatoire dans un formulaire ?",
+    "options": ["required", "mandatory", "validate"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 8,
+    "q": "Quel tag HTML définit un bouton ?",
+    "options": ["<button>", "<input>", "<submit>"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 9,
+    "q": "Quel tag HTML définit le corps du document ?",
+    "options": ["<body>", "<html>", "<main>"],
+    "correct": [0],
+    "multi": false
+  },
+  {
+    "id": 10,
+    "q": "Quel tag HTML est sémantique pour un pied de page ?",
+    "options": ["<footer>", "<section>", "<div>"],
+    "correct": [0],
+    "multi": false
+  }
+]
