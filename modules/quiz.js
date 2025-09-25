@@ -121,6 +121,26 @@ class QuizController {
     }
   }
 
+  // Save lightweight progress snapshot (last answered question, score, time, details)
+  saveCurrentProgress(itemQ) {
+    try {
+      const nickname = (this.els.nicknameInput().value || "").trim();
+      const theme = this.storage.getTheme();
+      if (!nickname || !theme) return;
+      const state = {
+        lastAnsweredQuestionId: itemQ && itemQ.id != null ? itemQ.id : null,
+        lastAnsweredIndex: this.currentQuestion,
+        score: this.result,
+        min: this.min,
+        sec: this.sec,
+        totalQuestions: this.getCurrentThemeQuestions().length,
+        detailedResults: this.detailedResults,
+        updatedAt: new Date().toISOString(),
+      };
+      this.storage.saveProgress(nickname, theme, state);
+    } catch (_) {}
+  }
+
   showQuestion(index) {
     const container = this.els.quiz();
     this.ui.clearNode(container);
@@ -200,6 +220,9 @@ class QuizController {
           partialCredit: partial || undefined,
         });
 
+        // Autosave progress after answering
+        this.saveCurrentProgress(itemQ);
+
         setTimeout(() => {
           this.currentQuestion++;
           if (this.currentQuestion < currentThemeQuestions.length) {
@@ -254,6 +277,9 @@ class QuizController {
             }
           }
 
+          // Autosave progress after answering
+          this.saveCurrentProgress(itemQ);
+
           setTimeout(() => {
             this.currentQuestion++;
             if (this.currentQuestion < currentThemeQuestions.length) {
@@ -278,6 +304,13 @@ class QuizController {
     const timeFb = Stats.timeFeedbackByMinutes(this.min);
 
     const timeEl = this.els.time();
+
+    // Clear any in-progress state since the quiz is finished
+    try {
+      const themeKey = this.storage.getTheme();
+      this.storage.clearProgress(nickname, themeKey);
+    } catch (_) {}
+
     const quizData = {
       nickname,
       score: this.result.toFixed(1),
@@ -338,6 +371,9 @@ class QuizController {
       questionType: itemQ.multi ? "multiple" : "single",
       timedOut: true,
     });
+
+    // Autosave progress even on timeout
+    this.saveCurrentProgress(itemQ);
 
     this.ui.showTimeUp(itemDev);
 

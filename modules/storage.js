@@ -38,4 +38,42 @@ export class StorageService {
       return [];
     }
   }
+
+  saveProgress(nickname, theme, state) {
+    try {
+      const n = String(nickname || "").trim();
+      const t = String(theme || "").trim();
+      if (!n || !t) return;
+      const key = `progress:${n}:${t}`;
+      localStorage.setItem(key, JSON.stringify(state || {}));
+    } catch (e) {
+      console.error("Failed to save progress", e);
+    }
+  }
+
+  getProgress(nickname, theme) {
+    try {
+      const n = String(nickname || "").trim();
+      const t = String(theme || "").trim();
+      if (!n || !t) return null;
+      const key = `progress:${n}:${t}`;
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      console.error("Failed to read progress", e);
+      return null;
+    }
+  }
+
+  clearProgress(nickname, theme) {
+    try {
+      const n = String(nickname || "").trim();
+      const t = String(theme || "").trim();
+      if (!n || !t) return;
+      const key = `progress:${n}:${t}`;
+      localStorage.removeItem(key);
+    } catch (e) {
+      console.error("Failed to clear progress", e);
+    }
+  }
 }
