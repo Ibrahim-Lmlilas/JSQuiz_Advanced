@@ -44,7 +44,7 @@ export class StorageController {
       const n = String(nickname || "").trim();
       const t = String(theme || "").trim();
       if (!n || !t) return;
-      const key = `progress:${n}:${t}`;
+      const key = "progress:" + n + ":" + t;
       localStorage.setItem(key, JSON.stringify(state || {}));
     } catch (e) {
       console.error("Failed to save progress", e);
@@ -56,7 +56,7 @@ export class StorageController {
       const n = String(nickname || "").trim();
       const t = String(theme || "").trim();
       if (!n || !t) return null;
-      const key = `progress:${n}:${t}`;
+      const key = "progress:" + n + ":" + t;
       const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : null;
     } catch (e) {
@@ -70,7 +70,7 @@ export class StorageController {
       const n = String(nickname || "").trim();
       const t = String(theme || "").trim();
       if (!n || !t) return;
-      const key = `progress:${n}:${t}`;
+      const key = "progress:" + n + ":" + t;
       localStorage.removeItem(key);
     } catch (e) {
       console.error("Failed to clear progress", e);

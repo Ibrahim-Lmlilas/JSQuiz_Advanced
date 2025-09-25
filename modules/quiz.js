@@ -75,11 +75,11 @@ class QuizController {
       
       if (savedProgress && savedProgress.lastAnsweredIndex < savedProgress.totalQuestions) {
         const resumeConfirm = confirm(
-          `Vous avez un quiz ${themeKey.replace('_basics', '').toUpperCase()} en cours.\n` +
-          `Progression: ${savedProgress.lastAnsweredIndex}/${savedProgress.totalQuestions} questions\n` +
-          `Score actuel: ${savedProgress.score}/${savedProgress.totalQuestions}\n\n` +
-          `Voulez-vous continuer où vous vous êtes arrêté?\n` +
-          `(Cliquez OK pour continuer, Annuler pour recommencer)`
+          "Vous avez un quiz " + themeKey.replace('_basics', '').toUpperCase() + " en cours.\n" +
+          "Progression: " + savedProgress.lastAnsweredIndex + "/" + savedProgress.totalQuestions + " questions\n" +
+          "Score actuel: " + savedProgress.score + "/" + savedProgress.totalQuestions + "\n\n" +
+          "Voulez-vous continuer où vous vous êtes arrêté?\n" +
+          "(Cliquez OK pour continuer, Annuler pour recommencer)"
         );
         
         if (resumeConfirm) {
@@ -223,7 +223,7 @@ class QuizController {
 
     const itemDev = document.createElement("div");
     const itemTitle = document.createElement("p");
-    itemTitle.textContent = `Question ${index + 1}: ${itemQ.q}`;
+    itemTitle.textContent = "Question " + (index + 1) + ": " + itemQ.q;
     itemDev.appendChild(itemTitle);
 
     const timerDisplay = this.ui.renderTimer(itemDev, this.questionTimeLeft);

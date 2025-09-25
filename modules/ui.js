@@ -25,13 +25,13 @@ export class UiController {
   renderTimer(container, seconds) {
     const el = document.createElement("div");
     el.id = "question-timer";
-    el.textContent = `Temps restant: ${seconds} secondes`;
+    el.textContent = "Temps restant: " + seconds + " secondes";
     container.appendChild(el);
     return el;
   }
 
   updateTimer(el, seconds) {
-    if (el) el.textContent = `Temps restant: ${seconds} secondes`;
+    if (el) el.textContent = "Temps restant: " + seconds + " secondes";
   }
 
   disableAll(node) {

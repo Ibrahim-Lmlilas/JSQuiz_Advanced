@@ -8,7 +8,7 @@ export class StatsController {
     if (p >= 80) return "Excellent!";
     if (p >= 60) return "Bien!";
     if (p >= 40) return "Peut mieux faire";
-    return "Il faut réviser!";
+    return "Il faut reviser!";
   }
 
   static timeFeedbackByMinutes(min) {
@@ -16,7 +16,7 @@ export class StatsController {
   }
 
   static formatChrono(min, sec) {
-    return `${min} min:${sec} sec`;
+    return min + " min:" + sec + " sec";
   }
 
   static scoreMultiple(selected, correct) {
