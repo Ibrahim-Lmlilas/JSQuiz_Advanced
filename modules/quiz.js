@@ -68,7 +68,28 @@ class QuizController {
         return;
       }
 
+      const nickname = this.els.nicknameInput().value;
       const themeKey = this.storage.getTheme();
+      
+      const savedProgress = this.storage.getProgress(nickname, themeKey);
+      
+      if (savedProgress && savedProgress.lastAnsweredIndex < savedProgress.totalQuestions) {
+        const resumeConfirm = confirm(
+          `Vous avez un quiz ${themeKey.replace('_basics', '').toUpperCase()} en cours.\n` +
+          `Progression: ${savedProgress.lastAnsweredIndex}/${savedProgress.totalQuestions} questions\n` +
+          `Score actuel: ${savedProgress.score}/${savedProgress.totalQuestions}\n\n` +
+          `Voulez-vous continuer où vous vous êtes arrêté?\n` +
+          `(Cliquez OK pour continuer, Annuler pour recommencer)`
+        );
+        
+        if (resumeConfirm) {
+          await this.resumeQuiz(savedProgress, themeKey);
+          return;
+        } else {
+          this.storage.clearProgress(nickname, themeKey);
+        }
+      }
+
       await this.loadQuestionsForTheme(themeKey);
       if (!this.currentThemeQuestions || this.currentThemeQuestions.length === 0) {
         alert("Aucune question trouvée pour ce quiz. Veuillez réessayer.");
@@ -135,6 +156,7 @@ class QuizController {
       const nickname = (this.els.nicknameInput().value || "").trim();
       const theme = this.storage.getTheme();
       if (!nickname || !theme) return;
+      
       const state = {
         lastAnsweredQuestionId: itemQ && itemQ.id != null ? itemQ.id : null,
         lastAnsweredIndex: this.currentQuestion,
@@ -142,11 +164,51 @@ class QuizController {
         min: this.min,
         sec: this.sec,
         totalQuestions: this.getCurrentThemeQuestions().length,
-        detailedResults: this.detailedResults,
+        detailedResults: [...this.detailedResults], // Make a copy
         updatedAt: new Date().toISOString(),
       };
       this.storage.saveProgress(nickname, theme, state);
     } catch (_) {}
+  }
+
+  async resumeQuiz(savedProgress, themeKey) {
+    const cartSelection = document.getElementById("cart_selection");
+    const startBtn = this.els.startBtn();
+
+    await this.loadQuestionsForTheme(themeKey);
+    if (!this.currentThemeQuestions || this.currentThemeQuestions.length === 0) {
+      alert("Aucune question trouvée pour ce quiz. Veuillez réessayer.");
+      return;
+    }
+
+    // Hide cart selection and start button
+    cartSelection.style.display = "none";
+    startBtn.style.display = "none";
+    this.els.quiz().style.display = "block";
+
+    // Restore saved state
+    this.currentQuestion = savedProgress.lastAnsweredIndex + 1;
+    this.result = savedProgress.score || 0;
+    this.min = savedProgress.min || 0;
+    this.sec = savedProgress.sec || 0;
+    this.detailedResults = savedProgress.detailedResults || [];
+
+    // Start the timer from where it was left
+    this.quizInterval = setInterval(() => {
+      this.sec++;
+      if (this.sec === 60) {
+        this.sec = 0;
+        this.min++;
+      }
+      this.els.time().textContent = Stats.formatChrono(this.min, this.sec);
+    }, 1000);
+
+    // Show current question or results if quiz was completed
+    if (this.currentQuestion < this.currentThemeQuestions.length) {
+      this.showQuestion(this.currentQuestion);
+    } else {
+      this.showResults();
+    }
   }
 
   showQuestion(index) {
