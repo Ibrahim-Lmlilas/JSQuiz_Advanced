@@ -1,11 +1,11 @@
-import { UIService } from "./ui.js";
-import { StorageService } from "./storage.js";
-import { Stats } from "./stats.js";
+import { UiController } from "./ui.js";
+import { StorageController } from "./storage.js";
+import { StatsController } from "./stats.js";
 
 class QuizController {
   constructor() {
-    this.ui = new UIService();
-    this.storage = new StorageService();
+    this.ui = new UiController();
+    this.storage = new StorageController();
     this.els = this.ui.els();
 
     this.currentQuestion = 0;
@@ -110,7 +110,7 @@ class QuizController {
           this.sec = 0;
           this.min++;
         }
-        this.els.time().textContent = Stats.formatChrono(this.min, this.sec);
+        this.els.time().textContent = StatsController.formatChrono(this.min, this.sec);
       }, 1000);
 
       this.showQuestion(this.currentQuestion);
@@ -200,7 +200,7 @@ class QuizController {
         this.sec = 0;
         this.min++;
       }
-      this.els.time().textContent = Stats.formatChrono(this.min, this.sec);
+      this.els.time().textContent = StatsController.formatChrono(this.min, this.sec);
     }, 1000);
 
     // Show current question or results if quiz was completed
@@ -265,7 +265,7 @@ class QuizController {
         }
         submitBtn.disabled = true;
 
-        const { increment, fullCorrect, partial } = Stats.scoreMultiple(
+        const { increment, fullCorrect, partial } = StatsController.scoreMultiple(
           selected,
           itemQ.correct
         );
@@ -369,9 +369,9 @@ class QuizController {
     const currentThemeQuestions = this.getCurrentThemeQuestions();
     const nickname = this.els.nicknameInput().value;
 
-    const p = Stats.percentage(this.result, currentThemeQuestions.length);
-    const feedback = Stats.feedbackByPercentage(p);
-    const timeFb = Stats.timeFeedbackByMinutes(this.min);
+    const p = StatsController.percentage(this.result, currentThemeQuestions.length);
+    const feedback = StatsController.feedbackByPercentage(p);
+    const timeFb = StatsController.timeFeedbackByMinutes(this.min);
 
     const timeEl = this.els.time();
 
