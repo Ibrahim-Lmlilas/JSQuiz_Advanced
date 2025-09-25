@@ -65,5 +65,3 @@ export class PDFService {
   }
 }
 
-export function renderCharts() {
-}

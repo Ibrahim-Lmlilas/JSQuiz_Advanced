@@ -223,340 +223,333 @@ export const themes = {
   ]
 };
 
-let currentQuestion = 0;
-let result = 0; // can be fractional when partial credit
-let min = 0;
-let sec = 0;
-let questionTimer = null;
-let questionTimeLeft = 30;
-let detailedResults = [];
-let quizInterval = null;
-let optioncart = false;
+class QuizController {
+  constructor() {
+    this.ui = new UIService();
+    this.storage = new StorageService();
+    this.els = this.ui.els();
 
-// Instantiate UI service and alias its methods to preserve current usages
-const ui = new UIService();
-const storage = new StorageService();
-const els = ui.els();
-const clearNode = ui.clearNode.bind(ui);
-const renderTimer = ui.renderTimer.bind(ui);
-const updateTimer = ui.updateTimer.bind(ui);
-const renderSingleOption = ui.renderSingleOption.bind(ui);
-const renderMultiOption = ui.renderMultiOption.bind(ui);
-const disableAll = ui.disableAll.bind(ui);
-const styleCorrectOption = ui.styleCorrectOption.bind(ui);
-const styleWrongOption = ui.styleWrongOption.bind(ui);
-const showTimeUp = ui.showTimeUp.bind(ui);
-const uiShowResults = ui.showResults.bind(ui);
-
-export function bindCartSelection() {
-  const carts = els.carts();
-  for (let i = 0; i < carts.length; i++) {
-    const cart = carts[i];
-    cart.addEventListener('click', function() {
-      optioncart = true;
-      const themeKey = cart.dataset.cart + '_basics';
-      storage.setTheme(themeKey);
-    });
+    this.currentQuestion = 0;
+    this.result = 0;
+    this.min = 0;
+    this.sec = 0;
+    this.questionTimer = null;
+    this.questionTimeLeft = 30;
+    this.detailedResults = [];
+    this.quizInterval = null;
+    this.optioncart = false;
   }
-}
 
-export function init() {
-  els.quiz().style.display = 'none';
-  const start = els.startBtn();
-  const nameModal = els.nameModal();
-  const timeEl = els.time();
-
-  bindCartSelection();
-
-  start.addEventListener('click', function(){
-    const nickname = els.nicknameInput().value;
-
-    if(nickname === ''){
-      alert('Please enter your name');
-      return;
+  bindCartSelection() {
+    const carts = this.els.carts();
+    for (let i = 0; i < carts.length; i++) {
+      const cart = carts[i];
+      cart.addEventListener('click', () => {
+        this.optioncart = true;
+        const themeKey = cart.dataset.cart + '_basics';
+        this.storage.setTheme(themeKey);
+      });
     }
-    if(nickname.length < 4){
-      alert('Name must be at least 4 characters long');
-      return;
-    }
-    if(!optioncart){
-      alert('Please select your cart');
-      return;
-    }
+  }
 
-    els.quiz().style.display = '';
-    start.style.display = 'none';
+  init() {
+    this.els.quiz().style.display = 'none';
+    const start = this.els.startBtn();
+    const nameModal = this.els.nameModal();
+    const timeEl = this.els.time();
 
-    start.hidden = true;
-    nameModal.hidden = true;
+    this.bindCartSelection();
 
-    currentQuestion = 0;
-    result = 0;
-    detailedResults = [];
+    start.addEventListener('click', () => {
+      const nickname = this.els.nicknameInput().value;
 
-    timeEl.textContent = `${sec}`;
-
-    quizInterval = setInterval(function(){
-      sec++;
-      if(sec === 60){
-        sec = 0; min++;
-      }
-      timeEl.textContent = Stats.formatChrono(min, sec);
-    }, 1000);
-
-    showQuestion(currentQuestion);
-  });
-}
-
-function getCurrentThemeQuestions() {
-  const key = storage.getTheme();
-  return themes[key] || [];
-}
-
-function showQuestion(index){
-  const container = els.quiz();
-  clearNode(container);
-
-  questionTimeLeft = 30;
-  clearInterval(questionTimer);
-
-  const currentThemeQuestions = getCurrentThemeQuestions();
-  const itemQ = currentThemeQuestions[index];
-
-  const itemDev = document.createElement('div');
-  const itemTitle = document.createElement('p');
-  itemTitle.textContent = `Question ${index + 1}: ${itemQ.q}`;
-  itemDev.appendChild(itemTitle);
-
-  const timerDisplay = renderTimer(itemDev, questionTimeLeft);
-
-  questionTimer = setInterval(function(){
-    questionTimeLeft--;
-    updateTimer(timerDisplay, questionTimeLeft);
-    if(questionTimeLeft <= 0){
-      clearInterval(questionTimer);
-      skipToNextQuestion(itemDev, itemQ);
-    }
-  }, 1000);
-
-  if (itemQ.multi) {
-    for (let i = 0; i < itemQ.options.length; i++) {
-      renderMultiOption(itemDev, itemQ.options[i], i);
-    }
-    const submitBtn = document.createElement('button');
-    submitBtn.textContent = 'Confirmer';
-    submitBtn.addEventListener('click', function(){
-      clearInterval(questionTimer);
-      const checkboxes = itemDev.querySelectorAll('input[type="checkbox"]');
-      const selected = [];
-      for (let k = 0; k < checkboxes.length; k++) {
-        if (checkboxes[k].checked) selected.push(k);
-        checkboxes[k].disabled = true;
-      }
-      if (selected.length === 0) {
-        alert('Veuillez sélectionner au moins une réponse!');
-        questionTimer = setInterval(function(){
-          questionTimeLeft--;
-          updateTimer(timerDisplay, questionTimeLeft);
-          if(questionTimeLeft <= 0){
-            clearInterval(questionTimer);
-            skipToNextQuestion(itemDev, itemQ);
-          }
-        }, 1000);
+      if (nickname === '') {
+        alert('Please enter your name');
         return;
       }
-      submitBtn.disabled = true;
-
-      const { increment, fullCorrect, partial } = Stats.scoreMultiple(selected, itemQ.correct);
-      result += increment;
-
-      for (let k = 0; k < checkboxes.length; k++) {
-        const label = checkboxes[k].nextElementSibling;
-        if (itemQ.correct.includes(k)) {
-          styleCorrectOption(label);
-        } else if (selected.includes(k)) {
-          styleWrongOption(label);
-        }
+      if (nickname.length < 4) {
+        alert('Name must be at least 4 characters long');
+        return;
+      }
+      if (!this.optioncart) {
+        alert('Please select your cart');
+        return;
       }
 
-      detailedResults.push({
-        questionId: itemQ.id,
-        question: itemQ.q,
-        userAnswer: selected.map(idx => itemQ.options[idx]),
-        correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
-        isCorrect: fullCorrect,
-        questionType: 'multiple',
-        partialCredit: partial || undefined
-      });
+      this.els.quiz().style.display = '';
+      start.style.display = 'none';
 
-      setTimeout(function(){
-        currentQuestion++;
-        if(currentQuestion < currentThemeQuestions.length){
-          showQuestion(currentQuestion);
-        } else {
-          showResults();
+      start.hidden = true;
+      nameModal.hidden = true;
+
+      this.currentQuestion = 0;
+      this.result = 0;
+      this.detailedResults = [];
+
+      timeEl.textContent = `${this.sec}`;
+
+      this.quizInterval = setInterval(() => {
+        this.sec++;
+        if (this.sec === 60) {
+          this.sec = 0; this.min++;
         }
-      }, 2000);
+        timeEl.textContent = Stats.formatChrono(this.min, this.sec);
+      }, 1000);
+
+      this.showQuestion(this.currentQuestion);
     });
-    itemDev.appendChild(submitBtn);
-  } else {
-    for (let i = 0; i < itemQ.options.length; i++) {
-      const option = itemQ.options[i];
-      renderSingleOption(itemDev, option, (btn) => {
-        clearInterval(questionTimer);
-        itemDev.querySelectorAll('button').forEach(b => b.disabled = true);
+  }
 
-        if(itemQ.correct.includes(i)){
-          btn.style.backgroundColor = 'green';
-          btn.style.color = 'white';
-          result++;
+  getCurrentThemeQuestions() {
+    const key = this.storage.getTheme();
+    return themes[key] || [];
+  }
 
-          detailedResults.push({
-            questionId: itemQ.id,
-            question: itemQ.q,
-            userAnswer: [option],
-            correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
-            isCorrect: true,
-            questionType: 'single'
-          });
-        } else {
-          btn.style.backgroundColor = 'red';
-          btn.style.color = 'white';
+  showQuestion(index) {
+    const container = this.els.quiz();
+    this.ui.clearNode(container);
 
-          detailedResults.push({
-            questionId: itemQ.id,
-            question: itemQ.q,
-            userAnswer: [option],
-            correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
-            isCorrect: false,
-            questionType: 'single'
-          });
+    this.questionTimeLeft = 30;
+    clearInterval(this.questionTimer);
 
-          const allButtons = itemDev.querySelectorAll('button');
-          for(let j = 0; j < allButtons.length; j++){
-            if(itemQ.correct.includes(j)){
-              allButtons[j].style.backgroundColor = 'green';
-              allButtons[j].style.color = 'white';
+    const currentThemeQuestions = this.getCurrentThemeQuestions();
+    const itemQ = currentThemeQuestions[index];
+
+    const itemDev = document.createElement('div');
+    const itemTitle = document.createElement('p');
+    itemTitle.textContent = `Question ${index + 1}: ${itemQ.q}`;
+    itemDev.appendChild(itemTitle);
+
+    const timerDisplay = this.ui.renderTimer(itemDev, this.questionTimeLeft);
+
+    this.questionTimer = setInterval(() => {
+      this.questionTimeLeft--;
+      this.ui.updateTimer(timerDisplay, this.questionTimeLeft);
+      if (this.questionTimeLeft <= 0) {
+        clearInterval(this.questionTimer);
+        this.skipToNextQuestion(itemDev, itemQ);
+      }
+    }, 1000);
+
+    if (itemQ.multi) {
+      for (let i = 0; i < itemQ.options.length; i++) {
+        this.ui.renderMultiOption(itemDev, itemQ.options[i], i);
+      }
+      const submitBtn = document.createElement('button');
+      submitBtn.textContent = 'Confirmer';
+      submitBtn.addEventListener('click', () => {
+        clearInterval(this.questionTimer);
+        const checkboxes = itemDev.querySelectorAll('input[type="checkbox"]');
+        const selected = [];
+        for (let k = 0; k < checkboxes.length; k++) {
+          if (checkboxes[k].checked) selected.push(k);
+          checkboxes[k].disabled = true;
+        }
+        if (selected.length === 0) {
+          alert('Veuillez sélectionner au moins une réponse!');
+          this.questionTimer = setInterval(() => {
+            this.questionTimeLeft--;
+            this.ui.updateTimer(timerDisplay, this.questionTimeLeft);
+            if (this.questionTimeLeft <= 0) {
+              clearInterval(this.questionTimer);
+              this.skipToNextQuestion(itemDev, itemQ);
+            }
+          }, 1000);
+          return;
+        }
+        submitBtn.disabled = true;
+
+        const { increment, fullCorrect, partial } = Stats.scoreMultiple(selected, itemQ.correct);
+        this.result += increment;
+
+        for (let k = 0; k < checkboxes.length; k++) {
+          const label = checkboxes[k].nextElementSibling;
+          if (itemQ.correct.includes(k)) {
+            this.ui.styleCorrectOption(label);
+          } else if (selected.includes(k)) {
+            this.ui.styleWrongOption(label);
+          }
+        }
+
+        this.detailedResults.push({
+          questionId: itemQ.id,
+          question: itemQ.q,
+          userAnswer: selected.map(idx => itemQ.options[idx]),
+          correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
+          isCorrect: fullCorrect,
+          questionType: 'multiple',
+          partialCredit: partial || undefined
+        });
+
+        setTimeout(() => {
+          this.currentQuestion++;
+          if (this.currentQuestion < currentThemeQuestions.length) {
+            this.showQuestion(this.currentQuestion);
+          } else {
+            this.showResults();
+          }
+        }, 2000);
+      });
+      itemDev.appendChild(submitBtn);
+    } else {
+      for (let i = 0; i < itemQ.options.length; i++) {
+        const option = itemQ.options[i];
+        this.ui.renderSingleOption(itemDev, option, (btn) => {
+          clearInterval(this.questionTimer);
+          itemDev.querySelectorAll('button').forEach(b => b.disabled = true);
+
+          if (itemQ.correct.includes(i)) {
+            btn.style.backgroundColor = 'green';
+            btn.style.color = 'white';
+            this.result++;
+
+            this.detailedResults.push({
+              questionId: itemQ.id,
+              question: itemQ.q,
+              userAnswer: [option],
+              correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
+              isCorrect: true,
+              questionType: 'single'
+            });
+          } else {
+            btn.style.backgroundColor = 'red';
+            btn.style.color = 'white';
+
+            this.detailedResults.push({
+              questionId: itemQ.id,
+              question: itemQ.q,
+              userAnswer: [option],
+              correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
+              isCorrect: false,
+              questionType: 'single'
+            });
+
+            const allButtons = itemDev.querySelectorAll('button');
+            for (let j = 0; j < allButtons.length; j++) {
+              if (itemQ.correct.includes(j)) {
+                allButtons[j].style.backgroundColor = 'green';
+                allButtons[j].style.color = 'white';
+              }
             }
           }
+
+          setTimeout(() => {
+            this.currentQuestion++;
+            if (this.currentQuestion < currentThemeQuestions.length) {
+              this.showQuestion(this.currentQuestion);
+            } else {
+              this.showResults();
+            }
+          }, 1500);
+        });
+      }
+    }
+
+    container.appendChild(itemDev);
+  }
+
+  showResults() {
+    const currentThemeQuestions = this.getCurrentThemeQuestions();
+    const nickname = this.els.nicknameInput().value;
+
+    const p = Stats.percentage(this.result, currentThemeQuestions.length);
+    const feedback = Stats.feedbackByPercentage(p);
+    const timeFb = Stats.timeFeedbackByMinutes(this.min);
+
+    const timeEl = this.els.time();
+    const quizData = {
+      nickname,
+      score: this.result.toFixed(1),
+      totalQuestions: currentThemeQuestions.length,
+      percentage: p,
+      time: timeEl.textContent,
+      theme: this.storage.getTheme(),
+      feedback,
+      timeFeedback: timeFb,
+      date: new Date().toISOString(),
+      detailedResults: this.detailedResults
+    };
+
+    this.storage.saveQuizResult(nickname, quizData);
+
+    this.ui.showResults(quizData, () => {
+      this.currentQuestion = 0;
+      this.result = 0;
+      this.min = 0;
+      this.sec = 0;
+      this.detailedResults = [];
+      this.optioncart = false;
+
+      clearInterval(this.quizInterval);
+      clearInterval(this.questionTimer);
+
+      this.els.quiz().style.display = 'none';
+      const start = this.els.startBtn();
+      start.style.display = '';
+      start.hidden = false;
+      this.els.nameModal().hidden = false;
+      timeEl.hidden = false;
+      timeEl.textContent = '';
+
+      const radios = document.querySelectorAll('input[type="radio"]');
+      for (let i = 0; i < radios.length; i++) radios[i].checked = false;
+
+      const allCarts = this.els.carts();
+      for (let i = 0; i < allCarts.length; i++) {
+        allCarts[i].style.borderColor = '';
+        allCarts[i].style.boxShadow = '';
+        const h3 = allCarts[i].querySelector('h3');
+        if (h3) h3.style.color = '';
+      }
+    });
+
+    clearInterval(this.quizInterval);
+    clearInterval(this.questionTimer);
+  }
+
+  skipToNextQuestion(itemDev, itemQ) {
+    this.detailedResults.push({
+      questionId: itemQ.id,
+      question: itemQ.q,
+      userAnswer: ['Pas de réponse (temps écoulé)'],
+      correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
+      isCorrect: false,
+      questionType: itemQ.multi ? 'multiple' : 'single',
+      timedOut: true
+    });
+
+    this.ui.showTimeUp(itemDev);
+
+    this.ui.disableAll(itemDev);
+
+    if (itemQ.multi) {
+      const checkboxes = itemDev.querySelectorAll('input[type="checkbox"]');
+      for (let i = 0; i < checkboxes.length; i++) {
+        const label = checkboxes[i].nextElementSibling;
+        if (itemQ.correct.includes(i)) {
+          this.ui.styleCorrectOption(label);
         }
-
-        setTimeout(function(){
-          currentQuestion++;
-          if(currentQuestion < currentThemeQuestions.length){
-            showQuestion(currentQuestion);
-          } else {
-            showResults();
-          }
-        }, 1500);
-      });
-    }
-  }
-
-  container.appendChild(itemDev);
-}
-
-function showResults(){
-  const currentThemeQuestions = getCurrentThemeQuestions();
-  const nickname = els.nicknameInput().value;
-
-  const p = Stats.percentage(result, currentThemeQuestions.length);
-  const feedback = Stats.feedbackByPercentage(p);
-  const timeFb = Stats.timeFeedbackByMinutes(min);
-
-  const timeEl = els.time();
-  const quizData = {
-    nickname,
-    score: result.toFixed(1),
-    totalQuestions: currentThemeQuestions.length,
-    percentage: p,
-    time: timeEl.textContent,
-    theme: storage.getTheme(),
-    feedback,
-    timeFeedback: timeFb,
-    date: new Date().toISOString(),
-    detailedResults
-  };
-
-  storage.saveQuizResult(nickname, quizData);
-
-  uiShowResults(quizData, function onRestart(){
-    currentQuestion = 0;
-    result = 0;
-    min = 0;
-    sec = 0;
-    detailedResults = [];
-    optioncart = false;
-
-    clearInterval(quizInterval);
-    clearInterval(questionTimer);
-
-    els.quiz().style.display = 'none';
-    const start = els.startBtn();
-    start.style.display = '';
-    start.hidden = false;
-    els.nameModal().hidden = false;
-    timeEl.hidden = false;
-    timeEl.textContent = '';
-
-    const radios = document.querySelectorAll('input[type="radio"]');
-    for (let i = 0; i < radios.length; i++) radios[i].checked = false;
-
-    const allCarts = els.carts();
-    for (let i = 0; i < allCarts.length; i++) {
-      allCarts[i].style.borderColor = '';
-      allCarts[i].style.boxShadow = '';
-      const h3 = allCarts[i].querySelector('h3');
-      if (h3) h3.style.color = '';
-    }
-  });
-
-  clearInterval(quizInterval);
-  clearInterval(questionTimer);
-}
-
-function skipToNextQuestion(itemDev, itemQ){
-  detailedResults.push({
-    questionId: itemQ.id,
-    question: itemQ.q,
-    userAnswer: ['Pas de réponse (temps écoulé)'],
-    correctAnswers: itemQ.correct.map(idx => itemQ.options[idx]),
-    isCorrect: false,
-    questionType: itemQ.multi ? 'multiple' : 'single',
-    timedOut: true
-  });
-
-  showTimeUp(itemDev);
-
-  disableAll(itemDev);
-
-  if(itemQ.multi){
-    const checkboxes = itemDev.querySelectorAll('input[type="checkbox"]');
-    for(let i = 0; i < checkboxes.length; i++){
-      const label = checkboxes[i].nextElementSibling;
-      if(itemQ.correct.includes(i)){
-        styleCorrectOption(label);
       }
-    }
-  } else {
-    const buttons = itemDev.querySelectorAll('button');
-    for(let i = 0; i < buttons.length; i++){
-      if(itemQ.correct.includes(i)){
-        buttons[i].style.backgroundColor = 'green';
-        buttons[i].style.color = 'white';
-      }
-    }
-  }
-
-  setTimeout(function(){
-    const qs = getCurrentThemeQuestions();
-    currentQuestion++;
-    if(currentQuestion < qs.length){
-      showQuestion(currentQuestion);
     } else {
-      showResults();
+      const buttons = itemDev.querySelectorAll('button');
+      for (let i = 0; i < buttons.length; i++) {
+        if (itemQ.correct.includes(i)) {
+          buttons[i].style.backgroundColor = 'green';
+          buttons[i].style.color = 'white';
+        }
+      }
     }
-  }, 2000);
+
+    setTimeout(() => {
+      const qs = this.getCurrentThemeQuestions();
+      this.currentQuestion++;
+      if (this.currentQuestion < qs.length) {
+        this.showQuestion(this.currentQuestion);
+      } else {
+        this.showResults();
+      }
+    }, 2000);
+  }
 }
 
-export default { init, themes };
+export default new QuizController();
