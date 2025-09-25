@@ -1,8 +1,8 @@
-import { PDFService } from "./charts.js";
+import { ChartsController } from "./charts.js";
 
-export class UIService {
-  constructor(pdfService = new PDFService()) {
-    this.pdfService = pdfService;
+export class UiController {
+  constructor(chartsController = new ChartsController()) {
+    this.chartsController = chartsController;
   }
 
   els() {

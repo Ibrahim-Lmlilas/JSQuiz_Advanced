@@ -479,4 +479,4 @@ class QuizController {
   }
 }
 
-export default new QuizController();
+export default QuizController;

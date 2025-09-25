@@ -1,4 +1,4 @@
-export class PDFService {
+export class ChartsController {
   generatePDF(quizData) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();

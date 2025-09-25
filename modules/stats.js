@@ -1,4 +1,4 @@
-export class Stats {
+export class StatsController {
   static percentage(score, total) {
     if (!total) return 0;
     return Math.round((score / total) * 100);

@@ -1,4 +1,4 @@
-export class StorageService {
+export class StorageController {
   setTheme(themeKey) {
     try {
       localStorage.setItem("themes", themeKey);
