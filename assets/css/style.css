@@ -206,10 +206,7 @@ h1{
     box-sizing: border-box;
 }
 
-#name_modal {
-    margin: 30px auto;
-    max-width: 100%;
-}
+
 
 #quiz_container {
     max-width: 800px;
@@ -600,7 +597,7 @@ h1{
 }
 
 #name_modal {
-    margin: 30px auto;
+    margin-bottom: 70px;
     max-width: 100%;
 }
 
