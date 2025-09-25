@@ -1,7 +1,6 @@
-import { els, clearNode, renderTimer, updateTimer, renderSingleOption, renderMultiOption, disableAll, styleCorrectOption, styleWrongOption, showTimeUp, showResults as uiShowResults } from './ui.js';
-import { setTheme, getTheme, saveQuizResult } from './storage.js';
-import { percentage, feedbackByPercentage, timeFeedbackByMinutes, formatChrono, scoreMultiple } from './stats.js';
-import { generatePDF } from './charts.js';
+import { UIService } from './ui.js';
+import { StorageService } from './storage.js';
+import { Stats } from './stats.js';
 
 export const themes = {
   "js_basics": [
@@ -234,6 +233,21 @@ let detailedResults = [];
 let quizInterval = null;
 let optioncart = false;
 
+// Instantiate UI service and alias its methods to preserve current usages
+const ui = new UIService();
+const storage = new StorageService();
+const els = ui.els();
+const clearNode = ui.clearNode.bind(ui);
+const renderTimer = ui.renderTimer.bind(ui);
+const updateTimer = ui.updateTimer.bind(ui);
+const renderSingleOption = ui.renderSingleOption.bind(ui);
+const renderMultiOption = ui.renderMultiOption.bind(ui);
+const disableAll = ui.disableAll.bind(ui);
+const styleCorrectOption = ui.styleCorrectOption.bind(ui);
+const styleWrongOption = ui.styleWrongOption.bind(ui);
+const showTimeUp = ui.showTimeUp.bind(ui);
+const uiShowResults = ui.showResults.bind(ui);
+
 export function bindCartSelection() {
   const carts = els.carts();
   for (let i = 0; i < carts.length; i++) {
@@ -241,7 +255,7 @@ export function bindCartSelection() {
     cart.addEventListener('click', function() {
       optioncart = true;
       const themeKey = cart.dataset.cart + '_basics';
-      setTheme(themeKey);
+      storage.setTheme(themeKey);
     });
   }
 }
@@ -287,7 +301,7 @@ export function init() {
       if(sec === 60){
         sec = 0; min++;
       }
-      timeEl.textContent = formatChrono(min, sec);
+      timeEl.textContent = Stats.formatChrono(min, sec);
     }, 1000);
 
     showQuestion(currentQuestion);
@@ -295,7 +309,7 @@ export function init() {
 }
 
 function getCurrentThemeQuestions() {
-  const key = getTheme();
+  const key = storage.getTheme();
   return themes[key] || [];
 }
 
@@ -353,7 +367,7 @@ function showQuestion(index){
       }
       submitBtn.disabled = true;
 
-      const { increment, fullCorrect, partial } = scoreMultiple(selected, itemQ.correct);
+      const { increment, fullCorrect, partial } = Stats.scoreMultiple(selected, itemQ.correct);
       result += increment;
 
       for (let k = 0; k < checkboxes.length; k++) {
@@ -446,9 +460,9 @@ function showResults(){
   const currentThemeQuestions = getCurrentThemeQuestions();
   const nickname = els.nicknameInput().value;
 
-  const p = percentage(result, currentThemeQuestions.length);
-  const feedback = feedbackByPercentage(p);
-  const timeFb = timeFeedbackByMinutes(min);
+  const p = Stats.percentage(result, currentThemeQuestions.length);
+  const feedback = Stats.feedbackByPercentage(p);
+  const timeFb = Stats.timeFeedbackByMinutes(min);
 
   const timeEl = els.time();
   const quizData = {
@@ -457,14 +471,14 @@ function showResults(){
     totalQuestions: currentThemeQuestions.length,
     percentage: p,
     time: timeEl.textContent,
-    theme: getTheme(),
+    theme: storage.getTheme(),
     feedback,
     timeFeedback: timeFb,
     date: new Date().toISOString(),
     detailedResults
   };
 
-  saveQuizResult(nickname, quizData);
+  storage.saveQuizResult(nickname, quizData);
 
   uiShowResults(quizData, function onRestart(){
     currentQuestion = 0;
