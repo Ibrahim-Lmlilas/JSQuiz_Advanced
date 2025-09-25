@@ -7,6 +7,7 @@ export class UIService {
 
   els() {
     return {
+        MyQuiz : ()=> document.getElementById("MyQuiz"),
       startBtn: () => document.getElementById("Start_btn"),
       time: () => document.getElementById("time"),
       quiz: () => document.getElementById("quiz_container"),

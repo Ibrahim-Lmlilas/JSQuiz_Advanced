@@ -22,27 +22,30 @@ class QuizController {
 
   bindCartSelection() {
     const carts = this.els.carts();
+    const startBtn = this.els.startBtn();
+
     for (let i = 0; i < carts.length; i++) {
       const cart = carts[i];
       cart.addEventListener("click", () => {
         this.optioncart = true;
         const themeKey = cart.dataset.cart + "_basics";
         this.storage.setTheme(themeKey);
+
+        // Make the 'Start Quiz' button visible
+        startBtn.style.display = "block";
       });
     }
   }
 
   init() {
-    this.els.quiz().style.display = "none";
-    const start = this.els.startBtn();
     const nameModal = this.els.nameModal();
-    const timeEl = this.els.time();
+    const cartSelection = document.getElementById("cart_selection");
+    const startBtn = this.els.startBtn();
+    const MyQuiz = this.els.MyQuiz();
 
-    this.bindCartSelection();
-
-    start.addEventListener("click", async () => {
+    const nextBtn = document.getElementById("next_btn");
+    nextBtn.addEventListener("click", () => {
       const nickname = this.els.nicknameInput().value;
-
       if (nickname === "") {
         alert("Please enter your name");
         return;
@@ -51,6 +54,15 @@ class QuizController {
         alert("Name must be at least 4 characters long");
         return;
       }
+    MyQuiz.style.display = "none";
+      nameModal.style.display = "none";
+      cartSelection.style.display = "block";
+    });
+
+    this.bindCartSelection();
+
+    startBtn.addEventListener("click", async () => {
+
       if (!this.optioncart) {
         alert("Please select your cart");
         return;
@@ -63,17 +75,13 @@ class QuizController {
         return;
       }
 
-      this.els.quiz().style.display = "";
-      start.style.display = "none";
-
-      start.hidden = true;
-      nameModal.hidden = true;
+      cartSelection.style.display = "none";
+      startBtn.style.display = "none";
+      this.els.quiz().style.display = "block";
 
       this.currentQuestion = 0;
       this.result = 0;
       this.detailedResults = [];
-
-      timeEl.textContent = `${this.sec}`;
 
       this.quizInterval = setInterval(() => {
         this.sec++;
@@ -81,7 +89,7 @@ class QuizController {
           this.sec = 0;
           this.min++;
         }
-        timeEl.textContent = Stats.formatChrono(this.min, this.sec);
+        this.els.time().textContent = Stats.formatChrono(this.min, this.sec);
       }, 1000);
 
       this.showQuestion(this.currentQuestion);
