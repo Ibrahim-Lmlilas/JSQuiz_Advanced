@@ -501,6 +501,25 @@ h1{
   height: 100%;
 }
 
+.stats-modal-bg-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-modal-bg-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7); /* black overlay, adjust alpha as needed */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.stats-modal-bg-overlay > * {
+  position: relative;
+  z-index: 1;
+}
+
 @media (max-width: 768px) {
     body {
         padding: 10px;
