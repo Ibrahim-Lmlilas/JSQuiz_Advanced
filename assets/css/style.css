@@ -444,6 +444,13 @@ h1{
     border-color: #155724 !important;
 }
 
+.button-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 4px;
+}
+
 @media (max-width: 768px) {
     body {
         padding: 10px;

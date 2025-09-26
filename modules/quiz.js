@@ -26,7 +26,6 @@ class QuizController {
     const dashboardBtn = this.els.dashboardBtn();
     if (dashboardBtn) {
       dashboardBtn.addEventListener("click", () => {
-        // Gather all results from localStorage
         let scoresByUser = {};
         for (let i = 0; i < localStorage.length; i++) {
           const key = localStorage.key(i);
@@ -43,7 +42,6 @@ class QuizController {
             } catch {}
           }
         }
-        // Show dashboard with scoresByUser
         StatsController.showDashboard({scoresByUser});
       });
     }
@@ -60,7 +58,6 @@ class QuizController {
         const themeKey = cart.dataset.cart + "_basics";
         this.storage.setTheme(themeKey);
 
-        // Make the 'Start Quiz' button visible
         startBtn.style.display = "block";
       });
     }
@@ -73,19 +70,30 @@ class QuizController {
     const MyQuiz = this.els.MyQuiz();
 
     const nextBtn = document.getElementById("next_btn");
+    const dashboardBtn = document.getElementById("Dashboard_btn");
+
+    if (nameModal && nameModal.style.display !== "none") {
+      if (nextBtn) nextBtn.style.display = "block";
+      if (dashboardBtn) dashboardBtn.style.display = "block";
+      if (startBtn) startBtn.style.display = "none";
+    }
+
     nextBtn.addEventListener("click", () => {
       const nickname = this.els.nicknameInput().value;
       if (nickname === "") {
-        alert("Please enter your name");
+        alert("Veuillez entrer votre nom");
         return;
       }
       if (nickname.length < 4) {
-        alert("Name must be at least 4 characters long");
+        alert("Le nom doit comporter au moins 4 caractères");
         return;
       }
       if (MyQuiz) MyQuiz.style.display = "none";
       if (nameModal) nameModal.style.display = "none";
       if (cartSelection) cartSelection.style.display = "block";
+      if (dashboardBtn) dashboardBtn.style.display = "block";
+      if (nextBtn) nextBtn.style.display = "none";
+      if (startBtn) startBtn.style.display = "block";
     });
 
     this.bindCartSelection();
@@ -93,7 +101,7 @@ class QuizController {
     startBtn.addEventListener("click", async () => {
 
       if (!this.optioncart) {
-        alert("Please select your cart");
+        alert("Veuillez sélectionner un quiz");
         return;
       }
 
@@ -179,7 +187,6 @@ class QuizController {
     }
   }
 
-  // Save lightweight progress snapshot (last answered question, score, time, details)
   saveCurrentProgress(itemQ) {
     try {
       const nickname = (this.els.nicknameInput().value || "").trim();
@@ -193,7 +200,7 @@ class QuizController {
         min: this.min,
         sec: this.sec,
         totalQuestions: this.getCurrentThemeQuestions().length,
-        detailedResults: [...this.detailedResults], // Make a copy
+        detailedResults: [...this.detailedResults],  
         updatedAt: new Date().toISOString(),
       };
       this.storage.saveProgress(nickname, theme, state);
@@ -210,19 +217,16 @@ class QuizController {
       return;
     }
 
-    // Hide cart selection and start button
     cartSelection.style.display = "none";
     startBtn.style.display = "none";
     this.els.quiz().style.display = "block";
 
-    // Restore saved state
     this.currentQuestion = savedProgress.lastAnsweredIndex + 1;
     this.result = savedProgress.score || 0;
     this.min = savedProgress.min || 0;
     this.sec = savedProgress.sec || 0;
     this.detailedResults = savedProgress.detailedResults || [];
 
-    // Start the timer from where it was left
     this.quizInterval = setInterval(() => {
       this.sec++;
       if (this.sec === 60) {
@@ -232,7 +236,6 @@ class QuizController {
       this.els.time().textContent = StatsController.formatChrono(this.min, this.sec);
     }, 1000);
 
-    // Show current question or results if quiz was completed
     if (this.currentQuestion < this.currentThemeQuestions.length) {
       this.showQuestion(this.currentQuestion);
     } else {
@@ -241,6 +244,9 @@ class QuizController {
   }
 
   showQuestion(index) {
+    const dashboardBtn = document.getElementById("Dashboard_btn");
+    if (dashboardBtn) dashboardBtn.style.display = "none";
+
     const container = this.els.quiz();
     this.ui.clearNode(container);
 
@@ -319,7 +325,6 @@ class QuizController {
           partialCredit: partial || undefined,
         });
 
-        // Autosave progress after answering
         this.saveCurrentProgress(itemQ);
 
         setTimeout(() => {
@@ -376,7 +381,6 @@ class QuizController {
             }
           }
 
-          // Autosave progress after answering
           this.saveCurrentProgress(itemQ);
 
           setTimeout(() => {
@@ -404,7 +408,6 @@ class QuizController {
 
     const timeEl = this.els.time();
 
-    // Clear any in-progress state since the quiz is finished
     try {
       const themeKey = this.storage.getTheme();
       this.storage.clearProgress(nickname, themeKey);
@@ -438,7 +441,13 @@ class QuizController {
 
       this.els.quiz().style.display = "none";
       const start = this.els.startBtn();
-      start.style.display = "";
+      const cartSelection = document.getElementById("cart_selection");
+      const dashboardBtn = document.getElementById("Dashboard_btn");
+      const nextBtn = document.getElementById("next_btn");
+      if (cartSelection) cartSelection.style.display = "block";
+      if (start) start.style.display = "block";
+      if (dashboardBtn) dashboardBtn.style.display = "block";
+      if (nextBtn) nextBtn.style.display = "none";
       start.hidden = false;
       this.els.nameModal().hidden = false;
       timeEl.hidden = false;
@@ -471,7 +480,6 @@ class QuizController {
       timedOut: true,
     });
 
-    // Autosave progress even on timeout
     this.saveCurrentProgress(itemQ);
 
     this.ui.showTimeUp(itemDev);
