@@ -18,6 +18,35 @@ class QuizController {
     this.quizInterval = null;
     this.optioncart = false;
     this.currentThemeQuestions = [];
+
+    this.bindDashboardButton();
+  }
+
+  bindDashboardButton() {
+    const dashboardBtn = this.els.dashboardBtn();
+    if (dashboardBtn) {
+      dashboardBtn.addEventListener("click", () => {
+        // Gather all results from localStorage
+        let scoresByUser = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (!key.startsWith("progress:") && key !== "themes") {
+            try {
+              const arr = JSON.parse(localStorage.getItem(key));
+              if (Array.isArray(arr)) {
+                let total = 0;
+                arr.forEach(r => {
+                  if (r.score) total += Number(r.score);
+                });
+                scoresByUser[key] = total;
+              }
+            } catch {}
+          }
+        }
+        // Show dashboard with scoresByUser
+        StatsController.showDashboard({scoresByUser});
+      });
+    }
   }
 
   bindCartSelection() {
@@ -54,9 +83,9 @@ class QuizController {
         alert("Name must be at least 4 characters long");
         return;
       }
-    MyQuiz.style.display = "none";
-      nameModal.style.display = "none";
-      cartSelection.style.display = "block";
+      if (MyQuiz) MyQuiz.style.display = "none";
+      if (nameModal) nameModal.style.display = "none";
+      if (cartSelection) cartSelection.style.display = "block";
     });
 
     this.bindCartSelection();

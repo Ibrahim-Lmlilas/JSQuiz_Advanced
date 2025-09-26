@@ -15,6 +15,7 @@ export class UiController {
       carts: () => document.getElementsByClassName("cart"),
       cartSelection: () => document.getElementById("cart_selection"),
       nameModal: () => document.getElementById("name_modal"),
+      dashboardBtn: () => document.getElementById("Dashboard_btn"),
     };
   }
 
@@ -136,7 +137,11 @@ export class UiController {
     const downloadBtn = document.getElementById("download-pdf");
     if (downloadBtn) {
       downloadBtn.addEventListener("click", () => {
-        this.pdfService.generatePDF(quizData);
+        if (this.chartsController && typeof this.chartsController.generatePDF === "function") {
+          this.chartsController.generatePDF(quizData);
+        } else {
+          alert("PDF export not available.");
+        }
       });
     }
 

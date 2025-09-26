@@ -47,4 +47,43 @@ export class StatsController {
       totalCorrect,
     };
   }
+
+  static showDashboard(stats) {
+    let dashboard = document.getElementById("dashboard");
+    dashboard.style.display = "block";
+    dashboard.style.position = "fixed";
+    dashboard.style.top = "50%";
+    dashboard.style.left = "50%";
+    dashboard.style.transform = "translate(-50%, -50%)";
+    dashboard.style.background = "#222";
+    dashboard.style.color = "#fff";
+    dashboard.style.padding = "32px 24px 24px 24px";
+    dashboard.style.borderRadius = "12px";
+    dashboard.style.boxShadow = "0 4px 32px #000a";
+    dashboard.style.zIndex = 1000;
+    dashboard.style.minWidth = "320px";
+
+    const closeBtnHtml = '<span id="close-dashboard" style="position:absolute;top:8px;right:16px;cursor:pointer;font-size:24px;font-weight:bold;">&times;</span>';
+    const titleHtml = '<h2 style="margin-top:0;">Top 3 Utilisateurs par Score Total</h2>';
+    let listHtml = '<ul style="list-style:none;padding:0;">';
+    if (stats && stats.scoresByUser) {
+      const sorted = Object.entries(stats.scoresByUser)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3);
+      for (let i = 0; i < sorted.length; i++) {
+        const [nickname, total] = sorted[i];
+        listHtml += '<li style="margin:8px 0;font-size:18px;">' + (i+1) + '. <b>' + nickname + '</b> : <span style="color:#ffd700">' + total + '</span></li>';
+      }
+    } else {
+      listHtml += '<li>Aucune donnée</li>';
+    }
+    listHtml += '</ul>';
+    dashboard.innerHTML = closeBtnHtml + titleHtml + listHtml;
+    const closeBtn = document.getElementById("close-dashboard");
+    if (closeBtn) {
+      closeBtn.onclick = () => {
+        dashboard.style.display = "none";
+      };
+    }
+  }
 }
