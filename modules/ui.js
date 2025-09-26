@@ -155,4 +155,54 @@ export class UiController {
     const timeEl = time();
     if (timeEl) timeEl.hidden = true;
   }
+
+  showMyStatsBtnOnlyWithCart() {
+    const myStatsBtnRow = document.getElementById('myStatsBtnRow');
+    const cartSelection = document.getElementById('cart_selection');
+    function updateMyStatsBtnVisibility() {
+      if (cartSelection.style.display !== 'none' && cartSelection.style.display !== '') {
+        myStatsBtnRow.style.display = 'flex';
+      } else {
+        myStatsBtnRow.style.display = 'none';
+      }
+    }
+    const observer = new MutationObserver(updateMyStatsBtnVisibility);
+    observer.observe(cartSelection, { attributes: true, attributeFilter: ['style'] });
+    updateMyStatsBtnVisibility();
+  }
+
+  showMyStatsModal() {
+    const existing = document.getElementById("myStatsModal");
+    if (existing) existing.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "myStatsModal";
+    modal.style.position = "fixed";
+    modal.style.width = "100vw";
+    modal.style.height = "100vh";
+    modal.style.background = "rgba(0,0,0,0.4)";
+    modal.style.display = "flex";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+    modal.style.zIndex = "9999";
+
+    const innerDiv = document.createElement("div");
+    innerDiv.style.background = "#fff";
+    innerDiv.style.width = "90%";
+    innerDiv.style.height = "90%";
+    innerDiv.style.borderRadius = "16px";
+    innerDiv.style.boxShadow = "0 4px 32px rgba(0,0,0,0.15)";
+    innerDiv.style.display = "flex";
+    innerDiv.style.flexDirection = "column";
+    innerDiv.style.justifyContent = "center";
+    innerDiv.style.alignItems = "center";
+
+    modal.appendChild(innerDiv);
+    
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.remove();
+    });
+
+    document.body.appendChild(modal);
+  }   
 }

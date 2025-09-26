@@ -106,23 +106,28 @@ export class StatsController {
       listHtml += '<li style="font-family:\'Press Start 2P\',cursive;font-size:13px;">Aucune donnée</li>';
     }
     listHtml += '</ul>';
+    // Add overlay div for dark background
     dashboard.innerHTML = '<div class="modal-overlay-bg" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);border-radius:8px;z-index:0;"></div>' + closeBtnHtml + contentWrapperStart + trophyTitleHtml + listHtml + contentWrapperEnd;
     dashboard.style.position = "fixed";
     dashboard.style.overflow = "hidden";
+    // Set content wrapper to relative and z-index 1
     const contentWrapper = dashboard.querySelector('div[style*="max-width:260px"]');
     if (contentWrapper) {
       contentWrapper.style.position = "relative";
       contentWrapper.style.zIndex = "1";
     }
+    // Set close button z-index
     const closeBtn = document.getElementById("close-dashboard");
     if (closeBtn) {
       closeBtn.style.zIndex = "2";
       closeBtn.onclick = () => {
         dashboard.style.display = "none";
+        // Remove the fullscreen overlay if it exists
         const blocker = document.getElementById("dashboard-blocker");
         if (blocker && blocker.parentNode) blocker.parentNode.removeChild(blocker);
       };
     }
+    // Add fullscreen overlay div to block interaction with background (outside modal)
     let blocker = document.getElementById("dashboard-blocker");
     if (!blocker) {
       blocker = document.createElement("div");
