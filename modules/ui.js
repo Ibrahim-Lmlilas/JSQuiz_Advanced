@@ -305,113 +305,13 @@ export class UiController {
       csvBtn.style.letterSpacing = "0.5px";
       csvBtn.style.boxShadow = "0 2px 6px #0002";
       csvBtn.style.cursor = "url('assets/img/download.png'), auto";
-      // Helper to show export options modal (define once, before results.forEach)
-      function showExportOptionsModal(quiz, nickname, idx, type) {
-        // Remove any existing export modal
-        const oldModal = document.getElementById('exportOptionsModal');
-        if (oldModal) oldModal.remove();
-        // Modal overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'exportOptionsModal';
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100vw';
-        overlay.style.height = '100vh';
-        overlay.style.background = 'rgba(0,0,0,0.5)';
-        overlay.style.display = 'flex';
-        overlay.style.justifyContent = 'center';
-        overlay.style.alignItems = 'center';
-        overlay.style.zIndex = '10000';
-        // Modal box
-        const box = document.createElement('div');
-        box.style.background = '#18181b';
-        box.style.color = '#fff';
-        box.style.borderRadius = '12px';
-        box.style.padding = '32px 28px 24px 28px';
-        box.style.minWidth = '320px';
-        box.style.boxShadow = '0 4px 32px #0008';
-        box.style.fontFamily = "'Press Start 2P', cursive";
-        // Options
-        const options = [
-          { key: 'basic', label: 'Informations de base (Utilisateur, Thème, Score)', checked: true },
-          { key: 'details', label: 'Détails des questions', checked: true },
-          { key: 'userAnswers', label: 'Réponses utilisateur', checked: false },
-          { key: 'correctAnswers', label: 'Réponses correctes', checked: false },
-          { key: 'responseTime', label: 'Temps de réponse', checked: false },
-        ];
-        const state = {};
-        options.forEach(opt => state[opt.key] = opt.checked);
-        // Option checkboxes
-        options.forEach(opt => {
-          const row = document.createElement('div');
-          row.style.display = 'flex';
-          row.style.alignItems = 'center';
-          row.style.marginBottom = '10px';
-          const cb = document.createElement('input');
-          cb.type = 'checkbox';
-          cb.checked = opt.checked;
-          cb.id = 'export-opt-' + opt.key;
-          cb.style.marginRight = '8px';
-          cb.addEventListener('change', () => { state[opt.key] = cb.checked; });
-          row.appendChild(cb);
-          const lbl = document.createElement('label');
-          lbl.textContent = opt.label;
-          lbl.htmlFor = cb.id;
-          lbl.style.fontSize = '13px';
-          row.appendChild(cb);
-          row.appendChild(lbl);
-          box.appendChild(row);
-        });
-        // Buttons
-        const btnRow = document.createElement('div');
-        btnRow.style.display = 'flex';
-        btnRow.style.justifyContent = 'center';
-        btnRow.style.gap = '18px';
-        btnRow.style.marginTop = '18px';
-        // Cancel
-        const cancelBtn = document.createElement('button');
-        cancelBtn.textContent = 'Annuler';
-        cancelBtn.style.background = '#fff';
-        cancelBtn.style.color = '#18181b';
-        cancelBtn.style.fontWeight = 'bold';
-        cancelBtn.style.fontFamily = "'Press Start 2P', cursive";
-        cancelBtn.style.fontSize = '13px';
-        cancelBtn.style.padding = '10px 22px';
-        cancelBtn.style.border = 'none';
-        cancelBtn.style.borderRadius = '8px';
-        cancelBtn.style.cursor = 'pointer';
-        cancelBtn.addEventListener('click', () => overlay.remove());
-        // Download
-        const dlBtn = document.createElement('button');
-        dlBtn.textContent = 'Télécharger';
-        dlBtn.style.background = '#a78bfa';
-        dlBtn.style.color = '#fff';
-        dlBtn.style.fontWeight = 'bold';
-        dlBtn.style.fontFamily = "'Press Start 2P', cursive";
-        dlBtn.style.fontSize = '13px';
-        dlBtn.style.padding = '10px 22px';
-        dlBtn.style.border = 'none';
-        dlBtn.style.borderRadius = '8px';
-        dlBtn.style.cursor = 'pointer';
-        dlBtn.addEventListener('click', () => {
-          overlay.remove();
-          storage.exportQuizResult(quiz, nickname, idx, type, state);
-        });
-        btnRow.appendChild(cancelBtn);
-        btnRow.appendChild(dlBtn);
-        box.appendChild(btnRow);
-        overlay.appendChild(box);
-        document.body.appendChild(overlay);
-      }
-
       jsonBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        showExportOptionsModal(quiz, nickname, idx, 'json');
+        storage.exportQuizResult(quiz, nickname, idx, 'json');
       });
       csvBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        showExportOptionsModal(quiz, nickname, idx, 'csv');
+        storage.exportQuizResult(quiz, nickname, idx, 'csv');
       });
       btnsDiv.appendChild(jsonBtn);
       btnsDiv.appendChild(csvBtn);

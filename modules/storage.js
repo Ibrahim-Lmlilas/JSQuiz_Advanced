@@ -83,50 +83,17 @@ export class StorageController {
    * @param {string} nickname - The user's nickname
    * @param {number} idx - The index of the quiz result
    * @param {string} format - 'json' or 'csv'
-   * @param {object} [fields] - Optional: which fields to include (from modal)
    */
-  exportQuizResult(quiz, nickname, idx, format = 'json', fields = null) {
+  exportQuizResult(quiz, nickname, idx, format = 'json') {
     if (!quiz || !nickname) return;
-    let filtered = {};
-    // If fields is provided, filter quiz object
-    if (fields) {
-      // Basic info
-      if (fields.basic) {
-        filtered.nickname = quiz.nickname;
-        filtered.theme = quiz.theme;
-        filtered.score = quiz.score;
-        filtered.totalQuestions = quiz.totalQuestions;
-        filtered.percentage = quiz.percentage;
-        filtered.date = quiz.date;
-      }
-      // Details
-      if (fields.details && quiz.questions) {
-        filtered.questions = [];
-        quiz.questions.forEach((q, i) => {
-          let qObj = {};
-          if (fields.userAnswers && q.userAnswer !== undefined) qObj.userAnswer = q.userAnswer;
-          if (fields.correctAnswers && q.correctAnswer !== undefined) qObj.correctAnswer = q.correctAnswer;
-          if (fields.responseTime && q.responseTime !== undefined) qObj.responseTime = q.responseTime;
-          if (Object.keys(qObj).length > 0) {
-            qObj.question = q.question;
-            filtered.questions.push(qObj);
-          }
-        });
-      }
-    } else {
-      filtered = quiz;
-    }
     let blob, filename;
     if (format === 'json') {
-      blob = new Blob([JSON.stringify(filtered, null, 2)], { type: 'application/json' });
+      blob = new Blob([JSON.stringify(quiz, null, 2)], { type: 'application/json' });
       filename = `quiz-stats-${nickname}-${idx+1}.json`;
     } else if (format === 'csv') {
-      // Only flat fields for CSV
-      let flat = { ...filtered };
-      if (flat.questions) delete flat.questions;
-      const headers = Object.keys(flat);
+      const headers = Object.keys(quiz);
       const values = headers.map(k => {
-        let v = flat[k];
+        let v = quiz[k];
         if (typeof v === 'string') v = v.replace(/"/g, '""');
         return `"${v}"`;
       });
