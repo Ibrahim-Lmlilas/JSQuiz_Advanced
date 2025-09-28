@@ -120,3 +120,14 @@
         max-width: 250px;
     }
 }
+@media (max-width: 900px) {
+  .stats-charts-row {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .stats-chart-box {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+}

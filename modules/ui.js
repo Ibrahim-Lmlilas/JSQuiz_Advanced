@@ -189,49 +189,16 @@ export class UiController {
 
     const modal = document.createElement("div");
     modal.id = "myStatsModal";
-    modal.style.position = "fixed";
-    modal.style.width = "100vw";
-    modal.style.height = "100vh";
-    modal.style.background = "rgba(0,0,0,0.4)";
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    modal.style.zIndex = "9999";
 
     const innerDiv = document.createElement("div");
-    innerDiv.style.background = "#14213d url('assets/img/stati.gif') center/cover no-repeat";
-    innerDiv.style.position = "relative";
     innerDiv.classList.add("stats-modal-bg-overlay");
-    innerDiv.style.color = "#fff";
-    innerDiv.style.width = "80%";
-    innerDiv.style.height = "80%";
-    innerDiv.style.borderRadius = "16px";
-    innerDiv.style.boxShadow = "0 4px 32px rgba(0,0,0,0.15)";
-    innerDiv.style.display = "flex";
-    innerDiv.style.flexDirection = "column";
-    innerDiv.style.justifyContent = "flex-start";
-    innerDiv.style.alignItems = "center";
-    innerDiv.style.overflowY = "auto";
-    innerDiv.style.padding = "32px";
 
     const title = document.createElement("h2");
     title.textContent = `Statistiques de ${nickname}`;
     innerDiv.appendChild(title);
 
     const cardsRow = document.createElement("div");
-    cardsRow.style.display = "flex";
-    cardsRow.style.flexDirection = "row";
-    cardsRow.style.gap = "16px";
-    cardsRow.style.width = "100%";
-    cardsRow.style.overflowX = "auto";
-    cardsRow.style.marginBottom = "26px";
-    cardsRow.style.maxWidth = "75vw";
-    cardsRow.style.paddingBottom = "8px";
-    cardsRow.style.alignItems = "flex-start";
-    cardsRow.style.height = "140px";
-    cardsRow.style.minHeight = "140px";
-    cardsRow.style.maxHeight = "140px";
-    cardsRow.style.alignItems = "center";
+    cardsRow.className = "stats-cards-row";
 
     results.forEach(function(quiz, idx) {
       var card = document.createElement("div");
@@ -277,26 +244,11 @@ export class UiController {
     ];
     chartRows.forEach((row, rowIdx) => {
       const chartsRow = document.createElement("div");
-      chartsRow.style.display = "flex";
-      chartsRow.style.flexDirection = "row";
-      chartsRow.style.gap = "24px";
-      chartsRow.style.justifyContent = "center";
-      chartsRow.style.alignItems = "center";
-      chartsRow.style.width = "100%";
-      chartsRow.style.marginBottom = rowIdx === 0 ? "24px" : "0";
+      chartsRow.className = "stats-charts-row";
+      if (rowIdx === 0) chartsRow.style.marginBottom = "24px";
       row.forEach(({ id }) => {
         const chartBox = document.createElement("div");
-        chartBox.style.background = "#fff";
-        chartBox.style.borderRadius = "12px";
-        chartBox.style.boxShadow = "0 2px 8px rgba(0,0,0,0.08)";
-        chartBox.style.padding = "18px";
-        chartBox.style.display = "flex";
-        chartBox.style.justifyContent = "center";
-        chartBox.style.alignItems = "center";
-        chartBox.style.width = "calc(50% - 12px)";
-        chartBox.style.height = "240px";
-        chartBox.style.boxSizing = "border-box";
-        chartBox.style.maxWidth = "100%";
+        chartBox.className = "stats-chart-box";
         const canvas = document.createElement("canvas");
         canvas.id = id;
         chartBox.appendChild(canvas);
