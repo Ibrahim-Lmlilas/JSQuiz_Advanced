@@ -89,17 +89,17 @@ export class StorageController {
     let blob, filename;
     if (format === 'json') {
       blob = new Blob([JSON.stringify(quiz, null, 2)], { type: 'application/json' });
-      filename = `quiz-stats-${nickname}-${idx+1}.json`;
+      filename = 'quiz-stats-' + nickname + '-' + (idx+1) + '.json';
     } else if (format === 'csv') {
       const headers = Object.keys(quiz);
-      const values = headers.map(k => {
-        let v = quiz[k];
+      const values = headers.map(function(k) {
+        var v = quiz[k];
         if (typeof v === 'string') v = v.replace(/"/g, '""');
-        return `"${v}"`;
+        return '"' + v + '"';
       });
       const csv = headers.join(",") + "\n" + values.join(",");
       blob = new Blob([csv], { type: 'text/csv' });
-      filename = `quiz-stats-${nickname}-${idx+1}.csv`;
+      filename = 'quiz-stats-' + nickname + '-' + (idx+1) + '.csv';
     } else {
       return;
     }
@@ -109,6 +109,6 @@ export class StorageController {
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+    setTimeout(function() { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
   }
 }

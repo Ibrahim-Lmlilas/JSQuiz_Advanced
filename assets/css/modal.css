@@ -1,0 +1,201 @@
+/* modal.css: khass b lmodals, t9dar tzid fih styles dyal lmodals f future */
+
+.dashboard-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url('../img/modal-animated.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #222;
+  color: #fff;
+  width: 340px;
+  height: 340px;
+  padding: 28px;
+  border-radius: 8px;
+  box-shadow: 0 4px 32px #000a;
+  z-index: 1000;
+  min-width: 220px;
+  font-family: 'Press Start 2P', cursive;
+  max-width: 90vw;
+  overflow: hidden;
+}
+
+.close-dashboard {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  cursor: url('../img/download.png'), auto;
+  font-size: 18px;
+  font-weight: bold;
+  font-family: 'Press Start 2P', cursive;
+  z-index: 10;
+}
+
+.modal-overlay-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.7);
+  border-radius: 8px;
+  z-index: 0;
+}
+
+.dashboard-content-wrapper {
+  width: 100%;
+  max-width: 260px;
+  margin: 24px auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-trophy-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+  margin-top: -12px;
+}
+
+.dashboard-trophy-img {
+  background: #A3E635;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 0 0 3px #222;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-trophy-img img {
+  width: 50px;
+  height: 50px;
+  display: block;
+}
+
+.dashboard-list {
+  list-style: none;
+  padding: 0 8px 0 8px;
+  margin: 0 0 8px 0;
+  font-family: 'Press Start 2P', cursive;
+  width: 100%;
+  text-align: center;
+}
+
+.dashboard-list-item {
+  margin: 28px 0;
+  font-size: 13px;
+  font-family: 'Press Start 2P', cursive;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dashboard-list-rank {
+  min-width: 22px;
+  text-align: right;
+  display: inline-block;
+}
+
+.dashboard-list-nickname {
+  min-width: 80px;
+  text-align: left;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.dashboard-list-score {
+  min-width: 32px;
+  text-align: right;
+  display: inline-block;
+  color: #ffd700;
+}
+
+.dashboard-list-empty {
+  font-size: 13px;
+}
+
+.dashboard-blocker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.7);
+  z-index: 999;
+  pointer-events: auto;
+  transition: opacity 0.2s;
+}
+
+.stats-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 8px 6px;
+  font-size: 9px;
+  line-height: 1.7;
+  min-width: 220px;
+  max-width: 260px;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  font-family: 'Press Start 2P', cursive;
+  position: relative;
+  transition: box-shadow 0.2s;
+  background: #1a223d;
+  color: #fff;
+}
+
+.stats-card-row {
+  margin-bottom: 0.5em;
+  font-weight: normal;
+}
+
+.stats-card-btns {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 2;
+}
+
+.stats-card-hover {
+  box-shadow: 0 0 0 2px #2563eb, 0 2px 8px #0002;
+}
+
+.export-btn {
+  font-size: 9px;
+  padding: 8px 8px;
+  border-radius: 8px;
+  border: none;
+  background: #2563eb;
+  color: #fff;
+  font-family: 'Press Start 2P', cursive;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 6px #0002;
+  cursor: url('../img/download.png'), auto;
+}
+
+.export-btn-json {
+  margin: 0 0 4px 0;
+}
+
+.export-btn-csv {
+  margin: 0;
+}

@@ -97,19 +97,16 @@ export class ChartsController {
   }
 
   renderUserStatsChart(canvasId, results) {
-    // 1. Bar chart: Pourcentage by quiz
     const labels = results.map(
       (r) => r.theme + " - " + (r.date ? new Date(r.date).toLocaleDateString() : "")
     );
     const scores = results.map((r) => r.percentage);
 
-    // 2. Pie chart: Number of quizzes played by theme
     const themeCounts = {};
     results.forEach(r => { themeCounts[r.theme] = (themeCounts[r.theme] || 0) + 1; });
     const pieLabels = Object.keys(themeCounts);
     const pieData = Object.values(themeCounts);
 
-    // 3. Doughnut chart: Total correct vs wrong answers
     let totalCorrect = 0, totalWrong = 0;
     results.forEach(r => {
       if (typeof r.score === 'number' && typeof r.totalQuestions === 'number') {
@@ -121,11 +118,9 @@ export class ChartsController {
       }
     });
 
-    // 4. Line chart: Score progression over time
     const lineLabels = results.map(r => r.date ? new Date(r.date).toLocaleDateString() : '');
     const lineData = results.map(r => r.percentage);
 
-    // Remove previous chart instances if exist
     if (window.userStatsChartInstance) window.userStatsChartInstance.destroy();
     if (window.userStatsPieInstance) window.userStatsPieInstance.destroy();
     if (window.userStatsDoughnutInstance) window.userStatsDoughnutInstance.destroy();
@@ -138,7 +133,6 @@ export class ChartsController {
       return;
     }
 
-    // 1. Bar chart
     const ctx = document.getElementById(canvasId).getContext("2d");
     window.userStatsChartInstance = new ChartCtor(ctx, {
       type: "bar",
@@ -161,7 +155,6 @@ export class ChartsController {
       },
     });
 
-    // 2. Pie chart
     let pieCanvas = document.getElementById('userStatsPie');
     if (!pieCanvas) {
       pieCanvas = document.createElement('canvas');
@@ -188,7 +181,6 @@ export class ChartsController {
       }
     });
 
-    // 3. Doughnut chart
     let doughnutCanvas = document.getElementById('userStatsDoughnut');
     if (!doughnutCanvas) {
       doughnutCanvas = document.createElement('canvas');
@@ -213,7 +205,6 @@ export class ChartsController {
       }
     });
 
-    // 4. Line chart
     let lineCanvas = document.getElementById('userStatsLine');
     if (!lineCanvas) {
       lineCanvas = document.createElement('canvas');
@@ -240,7 +231,6 @@ export class ChartsController {
   }
 }
 
-// Add this at the end of the file to ensure Chart.js is loaded
 if (!window.Chart) {
   const script = document.createElement('script');
   script.src = 'https://cdn.jsdelivr.net/npm/chart.js';

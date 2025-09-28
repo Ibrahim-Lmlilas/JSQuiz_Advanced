@@ -176,7 +176,6 @@ export class UiController {
     const existing = document.getElementById("myStatsModal");
     if (existing) existing.remove();
 
-    // Get nickname
     let nickname = null;
     const input = document.getElementById("name");
     if (input && input.value.trim()) nickname = input.value.trim();
@@ -185,11 +184,9 @@ export class UiController {
       return;
     }
 
-    // Get user results from storage
     const storage = new StorageController();
     const results = storage.getUserResults(nickname);
 
-    // Modal setup
     const modal = document.createElement("div");
     modal.id = "myStatsModal";
     modal.style.position = "fixed";
@@ -204,9 +201,8 @@ export class UiController {
     const innerDiv = document.createElement("div");
     innerDiv.style.background = "#14213d url('assets/img/stati.gif') center/cover no-repeat";
     innerDiv.style.position = "relative";
-    // Add a black overlay using a psedo-elemnt
     innerDiv.classList.add("stats-modal-bg-overlay");
-    innerDiv.style.color = "#fff"; // white text for contrast
+    innerDiv.style.color = "#fff";
     innerDiv.style.width = "80%";
     innerDiv.style.height = "80%";
     innerDiv.style.borderRadius = "16px";
@@ -218,12 +214,10 @@ export class UiController {
     innerDiv.style.overflowY = "auto";
     innerDiv.style.padding = "32px";
 
-    // Title
     const title = document.createElement("h2");
     title.textContent = `Statistiques de ${nickname}`;
     innerDiv.appendChild(title);
 
-    // Stats cards container
     const cardsRow = document.createElement("div");
     cardsRow.style.display = "flex";
     cardsRow.style.flexDirection = "row";
@@ -239,89 +233,38 @@ export class UiController {
     cardsRow.style.maxHeight = "140px";
     cardsRow.style.alignItems = "center";
 
-    results.forEach((quiz, idx) => {
-      const card = document.createElement("div");
-      card.style.border = "1px solid #eee";
-      card.style.borderRadius = "8px";
-      card.style.padding = "10px 8px";
-      card.style.fontSize = "9px";
-      card.style.lineHeight = "1.7";
-      card.style.padding = "8px 6px";
-      card.style.minWidth = "220px";
-      card.style.maxWidth = "260px";
-      card.style.height = "90px";
-      card.style.display = "flex";
-      card.style.flexDirection = "column";
-      card.style.justifyContent = "center";
-      card.style.alignItems = "flex-start";
-      card.style.fontFamily = "'Press Start 2P', cursive";
-      card.style.position = "relative";
-      card.style.transition = "box-shadow 0.2s";
-      card.innerHTML = `
-        <div style='margin-bottom:0.5em;'><b>Quiz:</b> <span style='font-weight:normal;'>${quiz.theme || 'N/A'}</span></div>
-        <div style='margin-bottom:0.5em;'><b>Score:</b> <span style='font-weight:normal;'>${quiz.score}/${quiz.totalQuestions}</span></div>
-        <div style='margin-bottom:0.5em;'><b>Pourcentage:</b> <span style='font-weight:normal;'>${quiz.percentage}%</span></div>
-        <div><b>Date:</b> <span style='font-weight:normal;'>${quiz.date ? new Date(quiz.date).toLocaleString() : ''}</span></div>
-      `;
-      // Export buttons (centered, blue, margin/padding, show on hover)
-      const btnsDiv = document.createElement("div");
-      btnsDiv.style.position = "absolute";
-      btnsDiv.style.left = "50%";
-      btnsDiv.style.top = "50%";
-      btnsDiv.style.transform = "translate(-50%, -50%)";
-      btnsDiv.style.display = "none";
-      btnsDiv.style.flexDirection = "column";
-      btnsDiv.style.gap = "10px";
-      btnsDiv.style.zIndex = "2";
-      // JSON button
-      const jsonBtn = document.createElement("button");
+    results.forEach(function(quiz, idx) {
+      var card = document.createElement("div");
+      card.className = "stats-card";
+      card.innerHTML =
+        '<div class="stats-card-row"><b>Quiz:</b> <span>' + (quiz.theme || 'N/A') + '</span></div>' +
+        '<div class="stats-card-row"><b>Score:</b> <span>' + quiz.score + '/' + quiz.totalQuestions + '</span></div>' +
+        '<div class="stats-card-row"><b>Pourcentage:</b> <span>' + quiz.percentage + '%</span></div>' +
+        '<div class="stats-card-row"><b>Date:</b> <span>' + (quiz.date ? new Date(quiz.date).toLocaleString() : '') + '</span></div>';
+      var btnsDiv = document.createElement("div");
+      btnsDiv.className = "stats-card-btns";
+      var jsonBtn = document.createElement("button");
       jsonBtn.textContent = "Export JSON";
       jsonBtn.className = "export-btn export-btn-json";
-      jsonBtn.style.fontSize = "9px";
-      jsonBtn.style.padding = "8px 8px";
-      jsonBtn.style.margin = "0 0 4px 0";
-      jsonBtn.style.borderRadius = "8px";
-      jsonBtn.style.border = "none";
-      jsonBtn.style.background = "#2563eb";
-      jsonBtn.style.color = "#fff";
-      jsonBtn.style.fontFamily = "'Press Start 2P', cursive";
-      jsonBtn.style.fontWeight = "bold";
-      jsonBtn.style.letterSpacing = "0.5px";
-      jsonBtn.style.boxShadow = "0 2px 6px #0002";
-      jsonBtn.style.cursor = "url('assets/img/download.png'), auto";
-      // CSV button
-      const csvBtn = document.createElement("button");
+      var csvBtn = document.createElement("button");
       csvBtn.textContent = "Export CSV";
       csvBtn.className = "export-btn export-btn-csv";
-      csvBtn.style.fontSize = "9px";
-      csvBtn.style.padding = "8px 8px";
-      csvBtn.style.margin = "0";
-      csvBtn.style.borderRadius = "8px";
-      csvBtn.style.border = "none";
-      csvBtn.style.background = "#2563eb";
-      csvBtn.style.color = "#fff";
-      csvBtn.style.fontFamily = "'Press Start 2P', cursive";
-      csvBtn.style.fontWeight = "bold";
-      csvBtn.style.letterSpacing = "0.5px";
-      csvBtn.style.boxShadow = "0 2px 6px #0002";
-      csvBtn.style.cursor = "url('assets/img/download.png'), auto";
-      jsonBtn.addEventListener("click", (e) => {
+      jsonBtn.addEventListener("click", function(e) {
         e.stopPropagation();
         storage.exportQuizResult(quiz, nickname, idx, 'json');
       });
-      csvBtn.addEventListener("click", (e) => {
+      csvBtn.addEventListener("click", function(e) {
         e.stopPropagation();
         storage.exportQuizResult(quiz, nickname, idx, 'csv');
       });
       btnsDiv.appendChild(jsonBtn);
       btnsDiv.appendChild(csvBtn);
       card.appendChild(btnsDiv);
-      card.addEventListener("mouseenter", () => { btnsDiv.style.display = "flex"; card.style.boxShadow = "0 0 0 2px #2563eb, 0 2px 8px #0002"; });
-      card.addEventListener("mouseleave", () => { btnsDiv.style.display = "none"; card.style.boxShadow = "none"; });
+      card.addEventListener("mouseenter", function() { btnsDiv.style.display = "flex"; card.classList.add("stats-card-hover"); });
+      card.addEventListener("mouseleave", function() { btnsDiv.style.display = "none"; card.classList.remove("stats-card-hover"); });
       cardsRow.appendChild(card);
     });
     innerDiv.appendChild(cardsRow);
-    // Chart.js charts: two rows, two charts per row, each chart 50% width
     const chartRows = [
       [
         { id: "userStatsChart" },
