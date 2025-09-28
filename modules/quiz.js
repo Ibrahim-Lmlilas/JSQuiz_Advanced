@@ -25,24 +25,24 @@ class QuizController {
   bindDashboardButton() {
     const dashboardBtn = this.els.dashboardBtn();
     if (dashboardBtn) {
-      dashboardBtn.addEventListener("click", () => {
-        let scoresByUser = {};
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
+      dashboardBtn.addEventListener("click", function() {
+        var scoresByUser = {};
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
           if (!key.startsWith("progress:") && key !== "themes") {
             try {
-              const arr = JSON.parse(localStorage.getItem(key));
+              var arr = JSON.parse(localStorage.getItem(key));
               if (Array.isArray(arr)) {
-                let total = 0;
-                arr.forEach(r => {
+                var total = 0;
+                arr.forEach(function(r) {
                   if (r.score) total += Number(r.score);
                 });
                 scoresByUser[key] = total;
               }
-            } catch {}
+            } catch (e) {}
           }
         }
-        StatsController.showDashboard({scoresByUser});
+        StatsController.showDashboard({scoresByUser: scoresByUser});
       });
     }
   }
