@@ -1,4 +1,6 @@
 export class StorageController {
+
+  //8
   setTheme(themeKey) {
     try {
       localStorage.setItem("themes", themeKey);

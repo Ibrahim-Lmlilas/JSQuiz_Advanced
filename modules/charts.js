@@ -129,7 +129,7 @@ export class ChartsController {
     let ChartCtor = window.Chart;
     if (ChartCtor && ChartCtor.Chart) ChartCtor = ChartCtor.Chart;
     if (!ChartCtor) {
-      alert("Chart.js is not loaded! Please add <script src='https://cdn.jsdelivr.net/npm/chart.js'></script> to your HTML.");
+      alert("kayn mochkiil awlidi ");
       return;
     }
 

@@ -3,6 +3,7 @@ import { StorageController } from "./storage.js";
 import { StatsController } from "./stats.js";
 
 class QuizController {
+  //11
   constructor() {
     this.ui = new UiController();
     this.storage = new StorageController();
